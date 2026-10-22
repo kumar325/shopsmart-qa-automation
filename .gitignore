@@ -21,3 +21,8 @@ captures/*.pcapng
 # OS
 .DS_Store
 Thumbs.db
+
+# Mobile app binaries (download instructions in README)
+apps/
+captures/*.keylog
+captures/*.txt
