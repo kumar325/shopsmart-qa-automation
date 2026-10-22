@@ -36,6 +36,11 @@ public class CheckoutOverviewPage extends BasePage {
         return Money.parse(textOf(SUBTOTAL));
     }
 
+    /** Raw label, e.g. "Item total: $29.99". Used to check formatting, not just the value. */
+    public String getItemTotalText() {
+        return textOf(SUBTOTAL);
+    }
+
     public BigDecimal getTax() {
         return Money.parse(textOf(TAX));
     }

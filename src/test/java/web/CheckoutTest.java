@@ -69,6 +69,25 @@ public class CheckoutTest extends BaseTest {
         assertEquals(info.getErrorMessage(), expectedError);
     }
 
+    /**
+     * BUG-WEB-01: the app adds prices as JavaScript floating-point numbers and prints the raw result.
+     * 9.99 + 49.99 = 59.980000000000004 in IEEE-754 doubles.
+     * Quarantined in the "known-defect" group (excluded from testng-web.xml) so CI stays meaningful;
+     * run it on demand with: ./mvnw test -Dgroups=known-defect -Dtest=CheckoutTest
+     */
+    @Test(groups = "known-defect", description = "BUG-WEB-01: item total is shown with 2 decimal places")
+    public void itemTotalIsFormattedToTwoDecimals() {
+        CheckoutOverviewPage overview = loginAsStandardUser()
+                .addToCart("Sauce Labs Bike Light")
+                .addToCart(FLEECE_JACKET)
+                .openCart()
+                .checkout()
+                .fillIn("Test", "Shopper", "10001")
+                .continueToOverview();
+
+        assertEquals(overview.getItemTotalText(), "Item total: $59.98");
+    }
+
     @Test(description = "Cancelling checkout returns to the cart with items intact")
     public void cancelCheckoutReturnsToCart() {
         List<String> items = loginAsStandardUser()

@@ -22,7 +22,13 @@
         <appium.version>11.0.0</appium.version>
 
         <maven.compiler.plugin.version>3.16.0</maven.compiler.plugin.version>
-        <maven.surefire.plugin.version>3.6.0</maven.surefire.plugin.version>
+        <!--
+          Pinned to 3.5.x on purpose. Surefire 3.6.0 runs TestNG through the JUnit Platform engine,
+          which ignores suiteXmlFiles: groups, parallel settings and suite selection in
+          src/test/resources/testng-*.xml silently stopped working. 3.5.6 is the last release
+          with the native TestNG provider.
+        -->
+        <maven.surefire.plugin.version>3.5.6</maven.surefire.plugin.version>
 
         <suite>src/test/resources/testng-web.xml</suite>
     </properties>

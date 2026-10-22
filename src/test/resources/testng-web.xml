@@ -3,6 +3,12 @@
 <!-- The screenshot listener is attached via @Listeners on web.BaseTest. -->
 <suite name="SauceDemo Web" parallel="methods" thread-count="4">
     <test name="Web UI">
+        <!-- Tests that reproduce open defects (see docs/bug-reports.md). Run on demand with -Dgroups=known-defect. -->
+        <groups>
+            <run>
+                <exclude name="known-defect"/>
+            </run>
+        </groups>
         <classes>
             <class name="web.LoginTest"/>
             <class name="web.SortingTest"/>
