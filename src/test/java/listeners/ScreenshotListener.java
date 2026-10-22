@@ -1,6 +1,7 @@
 package listeners;
 
 import driver.DriverManager;
+import driver.MobileDriverManager;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.testng.ITestListener;
@@ -20,11 +21,16 @@ public class ScreenshotListener implements ITestListener {
 
     @Override
     public void onTestFailure(ITestResult result) {
-        if (!DriverManager.hasDriver()) {
+        TakesScreenshot camera;
+        if (DriverManager.hasDriver()) {
+            camera = (TakesScreenshot) DriverManager.getDriver();
+        } else if (MobileDriverManager.hasDriver()) {
+            camera = MobileDriverManager.getDriver();
+        } else {
             return;
         }
         try {
-            byte[] png = ((TakesScreenshot) DriverManager.getDriver()).getScreenshotAs(OutputType.BYTES);
+            byte[] png = camera.getScreenshotAs(OutputType.BYTES);
             Files.createDirectories(SCREENSHOT_DIR);
             String name = result.getTestClass().getRealClass().getSimpleName() + "_" + result.getName()
                     + "_" + System.currentTimeMillis() + ".png";
