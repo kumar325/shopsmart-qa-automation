@@ -1,0 +1,23 @@
+# Build output
+target/
+
+# IDE
+.idea/
+*.iml
+.vscode/
+.classpath
+.project
+.settings/
+
+# Test reports
+test-output/
+newman/
+allure-results/
+
+# Network captures (review before committing)
+captures/*.pcap
+captures/*.pcapng
+
+# OS
+.DS_Store
+Thumbs.db

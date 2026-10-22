@@ -1,0 +1,21 @@
+{
+  "info": {
+    "name": "ShopSmart API",
+    "description": "CRUD and negative tests against the public Restful Booker practice API (https://restful-booker.herokuapp.com). Requests will be added after verifying each endpoint against the official docs and live responses.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": []
+    },
+    {
+      "name": "Bookings - CRUD",
+      "item": []
+    },
+    {
+      "name": "Bookings - Negative",
+      "item": []
+    }
+  ]
+}
