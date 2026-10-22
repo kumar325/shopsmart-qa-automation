@@ -1,0 +1,85 @@
+name: Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+# Least privilege: the jobs only need to read the code.
+permissions:
+  contents: read
+
+# A newer push to the same branch cancels the run in progress.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  web-tests:
+    name: Web UI (Selenium, headless Chrome)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+
+      # Chrome is preinstalled on the runner; Selenium Manager resolves the matching driver.
+      - name: Run web suite
+        env:
+          SAUCEDEMO_PASSWORD: ${{ secrets.SAUCEDEMO_PASSWORD }}
+        run: ./mvnw -B test -Dbrowser=chrome -Dheadless=true
+
+      - name: Upload test reports and failure screenshots
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: web-test-results
+          path: |
+            target/surefire-reports/
+            target/screenshots/
+          if-no-files-found: ignore
+
+  api-tests:
+    name: API (Postman / Newman)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '22'
+
+      - name: Install Newman
+        run: npm install -g newman@6.2.3
+
+      # Credentials come from repository secrets and are passed as variables,
+      # so they are never written into the collection or environment files.
+      - name: Run collection
+        env:
+          RB_USERNAME: ${{ secrets.RB_USERNAME }}
+          RB_PASSWORD: ${{ secrets.RB_PASSWORD }}
+        run: |
+          newman run postman/ShopSmart-API.postman_collection.json \
+            -e postman/ShopSmart-Dev.postman_environment.json \
+            --env-var "username=$RB_USERNAME" \
+            --env-var "password=$RB_PASSWORD" \
+            --reporters cli,junit \
+            --reporter-junit-export target/newman/api-results.xml
+
+      - name: Upload Newman report
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: api-test-results
+          path: target/newman/
+          if-no-files-found: ignore
+
+  # Mobile (Appium) tests are intentionally not run here: they need an Android emulator,
+  # which is slow and unreliable on hosted runners. See README for how to run them locally.
