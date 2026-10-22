@@ -1,0 +1,13 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<!-- Each test method gets its own browser via a ThreadLocal driver, so methods can run in parallel. -->
+<!-- The screenshot listener is attached via @Listeners on web.BaseTest. -->
+<suite name="SauceDemo Web" parallel="methods" thread-count="4">
+    <test name="Web UI">
+        <classes>
+            <class name="web.LoginTest"/>
+            <class name="web.SortingTest"/>
+            <class name="web.CartTest"/>
+            <class name="web.CheckoutTest"/>
+        </classes>
+    </test>
+</suite>
