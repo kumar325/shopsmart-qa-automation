@@ -3,7 +3,9 @@
 <!-- The screenshot listener is attached via @Listeners on web.BaseTest. -->
 <suite name="SauceDemo Web" parallel="methods" thread-count="4">
     <test name="Web UI">
-        <!-- Tests that reproduce open defects (see docs/bug-reports.md). Run on demand with -Dgroups=known-defect. -->
+        <!-- Tests that reproduce open defects (see docs/bug-reports.md). Run on demand with
+             -Dtest=web.*Test -Dgroups=known-defect (-Dtest bypasses this file; -Dgroups alone selects nothing,
+             because this exclude still applies). -->
         <groups>
             <run>
                 <exclude name="known-defect"/>
